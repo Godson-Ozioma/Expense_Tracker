@@ -11,6 +11,7 @@ class Category(models.Model):
     name = models.CharField(max_length=120)
 
     class Meta:
+        ordering = ('name', 'pk')
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'name'),
