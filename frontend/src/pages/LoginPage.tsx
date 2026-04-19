@@ -1,11 +1,18 @@
-import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LogIn, Sparkles } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 export function LoginPage() {
+  const navigate = useNavigate()
   const { login } = useAuth()
+
+  useEffect(() => {
+    if (localStorage.getItem('access_token')) {
+      navigate('/', { replace: true })
+    }
+  }, [navigate])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)

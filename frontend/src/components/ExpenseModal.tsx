@@ -97,9 +97,8 @@ export function ExpenseModal({
     <AnimatePresence>
       {open ? (
         <>
-          <motion.button
-            type="button"
-            aria-label="Close dialog"
+          <motion.div
+            role="presentation"
             className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
