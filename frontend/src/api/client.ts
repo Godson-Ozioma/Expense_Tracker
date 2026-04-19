@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
+import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 
 /** Dev: proxied via Vite `/api`. Prod: full URL e.g. `https://api.example.com/api/v1`. */
 export const API_BASE =
