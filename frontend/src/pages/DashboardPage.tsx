@@ -82,7 +82,19 @@ export function DashboardPage() {
 
   const pageSubtotal = useMemo(() => {
     const rows = expensesQuery.data?.results ?? []
-    return rows.reduce((sum, e) => sum + Number(e.amount), 0)
+    if (rows.length === 0) {
+      return { text: formatMoney(0, 'USD'), detail: '' as const }
+    }
+    const cur0 = rows[0].currency
+    const same = rows.every((e) => e.currency === cur0)
+    const sum = rows.reduce((s, e) => s + Number(e.amount), 0)
+    if (same) {
+      return { text: formatMoney(sum, cur0), detail: '' as const }
+    }
+    return {
+      text: '—',
+      detail: 'mixed currencies on this page' as const,
+    }
   }, [expensesQuery.data?.results])
 
   const createCategory = useMutation({
@@ -193,10 +205,11 @@ export function DashboardPage() {
               </span>
             </div>
             <p className="mt-2 font-mono text-2xl font-semibold tracking-tight text-emerald-300">
-              {formatMoney(String(pageSubtotal), 'USD')}
+              {pageSubtotal.text}
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              Sum of amounts on this page ({results.length} rows)
+              Sum on this page ({results.length} rows)
+              {pageSubtotal.detail ? ` · ${pageSubtotal.detail}` : ''}
             </p>
           </div>
           <div className="rounded-2xl border border-white/5 bg-[#101820]/80 p-5">
