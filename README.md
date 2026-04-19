@@ -14,7 +14,7 @@ Personal expense tracking with a **Django REST API** (JWT + PostgreSQL) and a **
 
 | Path | Purpose |
 |------|---------|
-| `expense_tracker/` | Django project (`manage.py`), settings, **`expenses`** app (models, API) |
+| `backend/` | Django project (`manage.py`), **`expense_tracker`** settings package, **`expenses`** app (models, API) |
 | `frontend/` | React SPA; dev server proxies `/api` to the backend |
 
 ## Prerequisites
@@ -28,13 +28,13 @@ Personal expense tracking with a **Django REST API** (JWT + PostgreSQL) and a **
 From the repo root:
 
 ```bash
-cd expense_tracker
+cd backend
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Create a **`.env`** file in the **repository root** and/or under **`expense_tracker/`** (both are loaded). Typical variables:
+Create a **`.env`** file in the **repository root** and/or under **`backend/`** (both are loaded). Typical variables:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -45,7 +45,7 @@ Create a **`.env`** file in the **repository root** and/or under **`expense_trac
 | `CORS_ALLOWED_ORIGINS` | No | Comma-separated origins for browser clients. Defaults include `http://localhost:5173` (Vite). |
 | `CORS_ALLOW_ALL` | No | Set to `1` only for debugging (allows any origin). |
 
-Apply migrations and run the server:
+Apply migrations and run the server (with **`backend/.venv`** activated):
 
 ```bash
 python manage.py migrate
@@ -54,6 +54,22 @@ python manage.py runserver
 
 API base URL: **`http://127.0.0.1:8000/api/v1/`**  
 Django admin: **`http://127.0.0.1:8000/admin/`** (create a superuser with `createsuperuser` if needed).
+
+### Troubleshooting: `ModuleNotFoundError: No module named 'django'`
+
+That means **`python` is not using the environment where Django is installed.** Common causes:
+
+1. **Wrong virtualenv** — A `.venv` from another folder (e.g. repo root or an old path) is active. Fix:
+   ```bash
+   deactivate   # optional: leave any active venv
+   cd backend
+   source .venv/bin/activate          # macOS/Linux
+   # backend\.venv\Scripts\activate   # Windows
+   which python                         # should end with backend/.venv/bin/python
+   pip install -r requirements.txt    # if packages are missing
+   python manage.py runserver
+   ```
+2. **No venv** — Run `pip install -r requirements.txt` inside `backend` after activating `backend/.venv`.
 
 ### API overview (all under `/api/v1/`)
 
@@ -70,7 +86,8 @@ List endpoints return paginated JSON (`count`, `next`, `previous`, `results`).
 ### Backend tests
 
 ```bash
-cd expense_tracker
+cd backend
+source .venv/bin/activate   # use backend's venv
 SECRET_KEY=test-secret-not-for-production python manage.py test
 ```
 
